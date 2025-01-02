@@ -135,7 +135,7 @@ describe('Runtime Settings', function () {
             const settings = await loadSettings(result)
             settings.should.have.property('credentialSecret', 'foo')
             settings.should.have.property('httpAdminRoot', '/red')
-            settings.should.have.property('ui', { path: '/dash' })
+            settings.should.have.property('ui', { path: '/dash', maxHttpBufferSize: 123 })
             settings.should.have.property('disableEditor', true)
             settings.should.have.property('apiMaxLength', '123')
             settings.should.have.property('debugMaxLength', 456)
@@ -312,6 +312,71 @@ describe('Runtime Settings', function () {
             // until we publish the release of the new nr-auth module.
             err.toString().should.match(/Cannot find module '@flowfuse\/nr-auth\/middleware'/)
         }
+    })
+    it('includes httpNodeMiddleware and dashboard iFrame middleware if flowforge-user auth type set and dashboard ui set to be loaded into iFrame', async function () {
+        const result = runtimeSettings.getSettingsFile({
+            baseURL: 'https://BASEURL',
+            forgeURL: 'https://FORGEURL',
+            settings: {
+                dashboardUI: '/foo',
+                httpNodeAuth: { type: 'flowforge-user' },
+                dashboardIFrame: true
+            }
+        })
+
+        const settings = await loadSettings(result)
+        settings.should.have.property('ui')
+        settings.ui.should.have.property('path', '/foo')
+        settings.ui.should.have.property('middleware')
+        settings.ui.middleware.should.be.an.Array().and.have.length(3)
+        ;(typeof settings.ui.middleware[0]).should.equal('function')
+        ;(typeof settings.ui.middleware[1]).should.equal('function')
+        ;(typeof settings.ui.middleware[2]).should.equal('function') // iFrame middleware
+        // calling the middleware function should add the CSP header & call next
+        const headers = {}
+        let nextCalled = false
+        const res = {
+            set: function (header, value) {
+                headers[header] = value
+            }
+        }
+        const next = function () {
+            nextCalled = true
+        }
+        settings.ui.middleware[2]({}, res, next)
+        headers.should.have.property('Content-Security-Policy', 'frame-ancestors *')
+        nextCalled.should.equal(true)
+    })
+    it('includes only dashboard iFrame middleware if flowforge-user auth type is not set and dashboard ui set to be loaded into iFrame', async function () {
+        const result = runtimeSettings.getSettingsFile({
+            baseURL: 'https://BASEURL',
+            forgeURL: 'https://FORGEURL',
+            settings: {
+                dashboardUI: '/foo',
+                dashboardIFrame: true
+            }
+        })
+
+        const settings = await loadSettings(result)
+        settings.should.have.property('ui')
+        settings.ui.should.have.property('path', '/foo')
+        settings.ui.should.have.property('middleware')
+        settings.ui.middleware.should.be.an.Array().and.have.length(1)
+        ;(typeof settings.ui.middleware[0]).should.equal('function') // iFrame middleware
+        // calling the middleware function should add the CSP header & call next
+        const headers = {}
+        let nextCalled = false
+        const res = {
+            set: function (header, value) {
+                headers[header] = value
+            }
+        }
+        const next = function () {
+            nextCalled = true
+        }
+        settings.ui.middleware[0]({}, res, next)
+        headers.should.have.property('Content-Security-Policy', 'frame-ancestors *')
+        nextCalled.should.equal(true)
     })
     it('includes HA settings when enabled', async function () {
         const result = runtimeSettings.getSettingsFile({

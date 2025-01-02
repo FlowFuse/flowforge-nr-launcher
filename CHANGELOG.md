@@ -1,3 +1,37 @@
+#### 2.12.0: Release
+
+ - Bump flowfuse/github-actions-workflows from 0.37.0 to 0.38.0 (#305)
+ - Update nr-file-nodes (#313) @hardillb
+ - Add Dashboard v2 max upload size (#310) @hardillb
+ - include crash detail in audit log transmission (#312) @Steve-Mcl
+ - Add "disable auto safe mode" option (#309) @Steve-Mcl
+ - Ensure restart on done only a running NR instance (#304) @hardillb
+ - Bump express version (#307) @hardillb
+ - Allow Dashboards to be loaded in an iFrame (#306) @hardillb
+ - Add user to flow storage (#287) @hardillb
+
+#### 2.11.0: Release
+
+ - Bump flowfuse/github-actions-workflows from 0.36.0 to 0.37.0 (#301)
+ - Pass through team-broker flag to instance settings (#302) @knolleary
+
+#### 2.10.0: Release
+
+ - Bump flowfuse/github-actions-workflows from 0.34.0 to 0.36.0 (#296)
+ - Bump flowfuse/github-actions-workflows from 0.33.0 to 0.34.0 (#294)
+ - Bump flowfuse/github-actions-workflows from 0.30.0 to 0.33.0 (#293)
+ - Update project nodes to latest (#298) @Steve-Mcl
+ - Bump cookie, express, express-session and light-my-request (#295) @app/dependabot
+
+#### 2.9.0: Release
+
+ - Bump flowfuse/github-actions-workflows from 0.29.0 to 0.30.0 (#289) @dependabot
+ - intercept logout click and emit logout event when editor is embedded (#288) @cstns
+ - Ensure auth middleware applied on httpStatic routes (#286) @knolleary
+ - Bump express to 4.21.0 to pick dependencies (#283) @hardillb
+ - Bump flowfuse/github-actions-workflows from 0.28.0 to 0.29.0 (#282) @dependabot
+ - Bump flowfuse/github-actions-workflows from 0.19.0 to 0.28.0 (#281) @dependabot
+
 #### 2.8.0: Release
 
  - Update Project Nodes and File nodes (#279) @hardillb
